@@ -22,16 +22,16 @@ namespace StringUtility {
      *  @return Result tokens.
      */
     std::vector<std::string> split(const std::string& str, const std::string& dels);
-    /** @brief Generate SHA1 hash of the string.
+    /** @brief Generate sha1 hash of the string.
      *  @param str Input string.
-     *  @return SHA1 hash of input string.
+     *  @return sha1 hash of input string.
      */
-    std::string SHA1(const std::string& str);
-    /** @brief Encode string into BASE64.
+    std::string sha1(const std::string& str);
+    /** @brief Encode string into Base64.
      *  @param str Input string.
-     *  @return BASE64 string.
+     *  @return Base64 string.
      */
-    std::string encodeBASE64(const std::string& str);
+    std::string encodeBase64(const std::string& str);
 };
 
 #endif
