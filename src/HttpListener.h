@@ -19,14 +19,14 @@ private:
     /** @brief Wait and Accept new connection. */
     boost::asio::ip::tcp::acceptor acceptor_;
     /** @brief Handle fail state.
-     *  @param error Boost error code.
+     *  @param ec Boost error code.
      *  @param msg Custom error message.
      */
-    void handleFail(const boost::system::error_code& error, const std::string& msg);
+    void handleFail(const boost::system::error_code& ec, const std::string& msg);
     /** @brief Handle accept state.
-     *  @param error Boost error code.
+     *  @param ec Boost error code.
      */
-    void handleAccept(const boost::system::error_code& error);
+    void handleAccept(const boost::system::error_code& ec);
     /** @brief Create HttpSession class object. 
      *  
      *  After acceptor_ accept a new connection, it will create HttpSession for 
