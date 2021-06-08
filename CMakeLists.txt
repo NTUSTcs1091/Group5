@@ -3,10 +3,10 @@ cmake_minimum_required(VERSION 3.3)
 project (Group5)
 
 # set default variable
-SET(Boost_USE_STATIC_LIBS ON)
-SET(Boost_USE_MULTITHREAD ON)
-SET(Boost_USE_STATIC_RUNTIME ON)
-SET(Boost_USE_DEBUG_RUNTIME ON)
+option(Boost_USE_STATIC_LIBS "Use static library." ON)
+option(Boost_USE_MULTITHREAD "Use multithread" ON)
+option(Boost_USE_STATIC_RUNTIME "Use static runtime" ON)
+option(Boost_USE_DEBUG_RUNTIME "Use debug runtime" ON)
 
 # find boost library     date_time 
 find_package(Boost REQUIRED COMPONENTS system thread regex)
