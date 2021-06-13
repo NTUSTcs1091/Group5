@@ -3,8 +3,6 @@
 // found in the LICENSE file.
 
 #include "SocketUtility.h"
-#include "StringUtility.h"
-
 
 SocketUtility::WSMessage parseMessage(const std::string& message) {
         return SocketUtility::WSMessage{};
@@ -71,4 +69,3 @@ std::string SocketUtility::EncodeMessage(const SocketUtility::Frame & frame){
 	}
 	return sendedMSG;
 }
-
