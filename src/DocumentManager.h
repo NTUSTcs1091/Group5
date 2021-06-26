@@ -32,6 +32,8 @@ typedef struct
 
 typedef struct
 {
+    /** @brief Constructor for Vector Initializing. */
+    Document(int id_, std::vector<Revision> history_) : id(id_), history(history_);
     /** @brief Document id. */
     int id;
     /** @brief Modify history list. */
@@ -43,7 +45,7 @@ class DocumentManager
 {
 private:
     /** @brief Map recording id and DocumentSession. */
-    std::map<int, DocumentSession *> doc_map;
+    std::map<int, Document> doc_map;
 
 public:
     DocumentManager();
@@ -71,6 +73,15 @@ public:
 
     /** @brief Initialize function to create docMap_. */
     bool createDocumentMap();
+
+    /** @brief Update document in docMap_.If not exists,create one. */
+    void updateDocumentByID(const int id);
+
+    /** @brief Retrive all histories from single document.
+     * @param message document id.
+     * @param message history list reference.
+    */
+    std::vector<Revision> *getHistoryFromDocument(const int id);
 };
 
 #endif
