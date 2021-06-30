@@ -5,6 +5,7 @@
 #ifndef HTTPLIB_SRC_DOCUMENTMANAGER_H
 #define HTTPLIB_SRC_DOCUMENTMANAGER_H
 
+#include <map>
 #include <string>
 #include <vector>
 
@@ -13,11 +14,12 @@
 class DocumentSession;
 
 /** @brief Store document modify revision */
-typedef struct
+class Revision
 {
+private:
     /** @brief Constructor for Vector Initializing. */
     Revision(std::string user_id_, int start_position_, int end_position_, bool is_insert_, std::string insert_data_, int delete_length_)
-        : user_id(user_id_), start_position(start_position_), end_position(end_position_), is_insert(is_insert_), insert_data(insert_data_), delete_length(delete_length_);
+        : user_id(user_id_), start_position(start_position_), end_position(end_position_), is_insert(is_insert_), insert_data(insert_data_), delete_length(delete_length_){};
     /** @brief Who made this revision. */
     std::string user_id;
     /** @brief Relative insert position from document start and end. */
@@ -28,23 +30,27 @@ typedef struct
     /** @brief insertData and deleteLength will only exist one at the same time. */
     std::string insert_data;
     int delete_length;
-} Revision;
 
-typedef struct
+public:
+    /** @brief Return the string expression for this Revision. */
+    std::string toString();
+};
+
+struct Document
 {
     /** @brief Constructor for Vector Initializing. */
-    Document(int id_, std::vector<Revision> history_) : id(id_), history(history_);
+    Document(int id_, std::vector<Revision> history_) : id(id_), history(history_){};
     /** @brief Document id. */
     int id;
     /** @brief Modify history list. */
     std::vector<Revision> history;
-} Document;
+};
 
 /** @brief Document Manager */
 class DocumentManager
 {
 private:
-    /** @brief Map recording id and DocumentSession. */
+    /** @brief Map recording id and Document. */
     std::map<int, Document> doc_map;
 
 public:
@@ -75,7 +81,7 @@ public:
     bool createDocumentMap();
 
     /** @brief Update document in docMap_.If not exists,create one. */
-    void updateDocumentByID(const int id);
+    void updateDocumentByID(const int id, Revision revision);
 
     /** @brief Retrive all histories from single document.
      * @param message document id.
