@@ -6,46 +6,71 @@
 #define HTTPLIB_SRC_HTTPSESSION_H_	
 
 #include <boost/asio.hpp>
+#include <boost/beast.hpp>
 
+#include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
-#include "SocketSession.h"
 #include "HttpUtility.h"
-class SocketSession;
+#include "SocketSession.h"
 
 /** @brief Handle the incoming http request. */
-class HttpSession {
+class HttpSession : public std::enable_shared_from_this<HttpSession> {
 private:
     /** @brief socket fd.*/
-    boost::asio::ip::tcp::socket socket_;
-    /** @brief Receive stream package.This is a callback for read_async() in asio
-     *  @param msg Stream package's content.
+     boost::asio::ip::tcp::socket socket_;
+
+	/** @brief http request */
+	 HttpUtility::HttpRequest request;
+	
+	/** @brief messege want to be send*/
+	std::string handshake_msg_ = "";
+	
+	/** @brief buffer for boost::asio::async_read*/
+	boost::asio::streambuf buffer_;
+	
+	/** @brief Receive message from client*/
+	void receiveMessage();
+
+    /** @brief Handle HttpRequest  This is called after receiveMessage() after the entire http request has been received.
+     *  @param ec System-specific errors. bytes 
      */
-    void receiveMessage(const std::vector<boost::asio::const_buffer> &msg);
-    /** @brief Handle HttpRequest. This is called after receiveMessage() after the entire http request has been received.
-     *  @param request Decoded HttpRequest.
-     */
-    void handleRequest(const HttpUtility::Request &request);
-    /** @brief Package Response and Send.
+    void receiveMessageHandler(const boost::system::error_code& ec, std::size_t bytes);
+    
+	/** @brief Package send http response.
+	 *  @param isUpgrade isUpgrade to websocket  or not
+	 */
+	void sendMessage(bool isUpgrade);
+	
+	/** @brief Handler after send response.
      *  @param response Decoded HttpResponse.
      */
-    void sendMessage(const HttpUtility::Response &response);
-    /** @brief Return true if this is upgraded to websocket */
+	void sendMessageHandler(const boost::system::error_code& ec, std::size_t bytes_transferred);
+    
+	/** @brief open the socketsession idf upgraded */
+	void  makeSocketSession();
+
+	/** @brief Return true if this is upgraded to websocket */
     bool isUpgrade();
+
+	/** @brief Package Response and Send.
+	 *  @param ec System-specific errors what Show what function error
+	 */
+	void handleFail(boost::system::error_code ec, char const* what);
 
 public:
 
-    explicit HttpSession(boost::asio::ip::tcp::socket&& socket);
+	explicit HttpSession(boost::asio::ip::tcp::socket&& socket):socket_(std::move(socket)) {}
     HttpSession(const HttpSession &) = delete;
     HttpSession& operator=(const HttpSession&) = delete;
 
     /** @brief Run HttpSession after initial.*/
-    void run();
+    void runAsync();
 
     /** @brief Close HttpSession.*/
-    void close();
+    void close(boost::system::error_code ec);
 
-    
 };
 #endif
